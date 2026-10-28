@@ -31,11 +31,19 @@ function EditPageContent() {
   const [bio, setBio] = useState("");
   const [slug, setSlug] = useState("");
   const [skills, setSkills] = useState<string[]>([]);
+  const [skillInput, setSkillInput] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [projects, setProjects] = useState<Item[]>([]);
   const [experience, setExperience] = useState<Item[]>([]);
   const [education, setEducation] = useState<Item[]>([]);
   const [socialLinks, setSocialLinks] = useState<Record<string, string>>({});
+
+  function addSkill() {
+    const skill = skillInput.trim();
+    if (!skill || skills.some((existing) => existing.toLowerCase() === skill.toLowerCase())) return;
+    setSkills((currentSkills) => [...currentSkills, skill]);
+    setSkillInput("");
+  }
 
   const loadPortfolio = useCallback(async (id: string) => {
     const { data, error } = await supabase
@@ -164,9 +172,9 @@ function EditPageContent() {
           <div className="flex items-center justify-between mb-4">
             <div><h3 className="serif-display text-[27px]">Skills</h3><p className="mt-1 text-[13px] text-muted-foreground">What do you love doing?</p></div>
           </div>
-          <div className="flex gap-2 mb-4">
+          <div className="mb-4 flex flex-wrap items-end gap-3">
             {skills.map((s, i) => (
-              <span key={i} className="flex items-center gap-2 rounded-medium border border-input bg-background px-3 py-1 text-sm">
+              <span key={`${s}-${i}`} className="flex items-center gap-2 rounded-full border border-input bg-background px-3 py-2 text-sm">
                 {s}
                 <button
                   type="button"
@@ -178,22 +186,23 @@ function EditPageContent() {
                 </button>
               </span>
             ))}
-            <Input
-              label="Add a skill"
-              aria-label="Add a skill"
-              value={""}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  const val = (e.target as HTMLInputElement).value.trim();
-                  if (val) {
-                    setSkills([...skills, val]);
-                    (e.target as HTMLInputElement).value = "";
+            <div className="flex min-w-[220px] flex-1 items-end gap-2">
+              <Input
+                label="Add a skill"
+                value={skillInput}
+                onChange={(e) => setSkillInput(e.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    addSkill();
                   }
-                }
-              }}
-              className="flex-1"
-            />
+                }}
+                className="flex-1"
+              />
+              <Button type="button" variant="outline" onClick={addSkill} disabled={!skillInput.trim()}>
+                Add
+              </Button>
+            </div>
           </div>
         </Card>
 

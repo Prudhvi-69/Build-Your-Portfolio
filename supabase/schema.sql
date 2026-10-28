@@ -39,16 +39,23 @@ create policy "Profiles are viewable by everyone"
   on public.profiles for select
   using ( true );
 
+drop policy if exists "Users can update own profile" on public.portfolios;
+drop policy if exists "Users can update own profile" on public.profiles;
 create policy "Users can update own profile"
-  on public.portfolios for all
-  using ( auth.uid() = user_id )
-  with check ( auth.uid() = user_id );
+  on public.profiles for update
+  using ( auth.uid() = id )
+  with check ( auth.uid() = id );
+
+create policy "Users can insert own profile"
+  on public.profiles for insert
+  with check ( auth.uid() = id );
 
 -- Portfolios: published ones are public; owners manage their own
 create policy "Published portfolios are viewable by everyone"
   on public.portfolios for select
   using ( is_published = true );
 
+drop policy if exists "Users can manage own portfolios" on public.portfolios;
 create policy "Users can manage own portfolios"
   on public.portfolios for all
   using ( auth.uid() = user_id )

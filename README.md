@@ -24,6 +24,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 
 Apply the schema in [`supabase/schema.sql`](./supabase/schema.sql) to the project database. Keep `.env.local` private; `.env.example` documents the variables without containing credentials.
 
+If the Supabase database was configured before the profile-creation fix, also run [`supabase/migrations/20261028_fix_profile_creation.sql`](./supabase/migrations/20261028_fix_profile_creation.sql) in the Supabase SQL Editor. This allows a signed-in user to create or update their own profile, which is required before creating a portfolio.
+
 ## Checks
 
 ```bash

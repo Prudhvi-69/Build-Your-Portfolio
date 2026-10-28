@@ -41,12 +41,12 @@ export async function createPortfolio(input: {
   } = await supabase.auth.getUser();
   if (!user) return { portfolio: null, error: new Error("Not authenticated") };
 
-  // Ensure profile exists
-  await supabase.from("profiles").upsert({
+  const { error: profileError } = await supabase.from("profiles").upsert({
     id: user.id,
     email: user.email,
     full_name: user.user_metadata?.full_name,
   });
+  if (profileError) return { portfolio: null, error: profileError };
 
   const { data, error } = await supabase
     .from("portfolios")
