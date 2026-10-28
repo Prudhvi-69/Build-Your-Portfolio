@@ -9,15 +9,18 @@ export interface InputProps
 }
 
 function Input({ className, type, label, ...props }: InputProps) {
+  const generatedId = React.useId();
+  const inputId = props.id ?? generatedId;
   return (
     <div className="space-y-1">
       {label && (
-        <label className="text-sm font-medium text-foreground">{label}</label>
+        <label htmlFor={inputId} className="field-label">{label}</label>
       )}
       <input
+        id={inputId}
         type={type}
         className={cn(
-          "flex h-10 w-full rounded-medium border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          "input-control flex h-11 w-full border px-3 py-2 text-sm focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
         {...props}

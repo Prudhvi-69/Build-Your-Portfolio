@@ -100,65 +100,69 @@ function EditPageContent() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">{mode === "create" ? "Create your portfolio" : "Edit portfolio"}</h1>
-        <Button onClick={() => router.push("/dashboard")} variant="outline">
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#67815c]">Your next chapter</p>
+          <h1 className="serif-display text-[42px] leading-none">{mode === "create" ? "Make it yours." : "A little polish."}</h1>
+          <p className="mt-2 text-sm text-muted-foreground">{mode === "create" ? "A few details, then your work is ready to share." : "Fine-tune your portfolio and let it shine."}</p>
+        </div>
+        <Button onClick={() => router.push("/dashboard")} variant="outline" className="rounded-full">
           Back to dashboard
         </Button>
       </div>
 
       {error && (
-        <div className="mb-4 p-3 rounded-medium bg-destructive/10 border border-destructive/50 text-destructive text-sm">
+        <div role="alert" className="mb-4 rounded-xl border border-[#f1c7bd] bg-[#fff2ef] p-3 text-[13px] text-[#a7372b]">
           {error}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <Card className="p-6">
+        <Card className="surface-card p-6 sm:p-8">
           <div className="grid md:grid-cols-2 gap-6">
+            <Input
+              label="Portfolio title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Title</label>
+              <label className="field-label" htmlFor="portfolio-slug">Your portfolio link</label>
               <Input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="My Portfolio"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Slug (URL)</label>
-              <Input
+                id="portfolio-slug"
+                aria-label="Your portfolio link"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
-                placeholder="jane-doe"
                 required
               />
               <p className="text-xs text-muted-foreground">
-                yourname.portfoliohost.dev/{slug}
+                {slug ? `Your page will be available at /portfolio/${slug}` : "Choose a short, memorable link for your portfolio."}
               </p>
             </div>
           </div>
           <div className="space-y-2 mt-6">
-            <label className="text-sm font-medium text-foreground">Bio</label>
+            <label className="field-label" htmlFor="portfolio-bio">A little about you</label>
             <Textarea
+              id="portfolio-bio"
+              aria-label="A little about you"
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              placeholder="Tell us about yourself..."
             />
           </div>
           <div className="space-y-2 mt-6">
-            <label className="text-sm font-medium text-foreground">Avatar URL</label>
+            <label className="field-label" htmlFor="portfolio-avatar">Profile image URL</label>
             <Input
+              id="portfolio-avatar"
+              aria-label="Profile image URL"
               value={avatarUrl}
               onChange={(e) => setAvatarUrl(e.target.value)}
-              placeholder="https://..."
             />
           </div>
         </Card>
 
-        <Card className="p-6">
+        <Card className="surface-card p-6 sm:p-8">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Skills</h3>
+            <div><h3 className="serif-display text-[27px]">Skills</h3><p className="mt-1 text-[13px] text-muted-foreground">What do you love doing?</p></div>
           </div>
           <div className="flex gap-2 mb-4">
             {skills.map((s, i) => (
@@ -166,6 +170,7 @@ function EditPageContent() {
                 {s}
                 <button
                   type="button"
+                  aria-label={`Remove ${s}`}
                   onClick={() => setSkills(skills.filter((_, j) => j !== i))}
                   className="text-muted-foreground hover:text-destructive"
                 >
@@ -174,6 +179,8 @@ function EditPageContent() {
               </span>
             ))}
             <Input
+              label="Add a skill"
+              aria-label="Add a skill"
               value={""}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
@@ -185,19 +192,19 @@ function EditPageContent() {
                   }
                 }
               }}
-              placeholder="Add a skill and press Enter"
               className="flex-1"
             />
           </div>
         </Card>
 
-        <Card className="p-6">
+        <Card className="surface-card p-6 sm:p-8">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Projects</h3>
+            <div><h3 className="serif-display text-[27px]">Projects</h3><p className="mt-1 text-[13px] text-muted-foreground">Show a few things you&apos;re proud of.</p></div>
           </div>
           {projects.map((p, i) => (
             <div key={i} className="grid md:grid-cols-3 gap-3 mb-3">
               <Input
+                label="Project name"
                 value={p.title}
                 onChange={(e) =>
                   setProjects(
@@ -206,9 +213,9 @@ function EditPageContent() {
                     )
                   )
                 }
-                placeholder="Project title"
               />
               <Input
+                label="What it is"
                 value={p.description}
                 onChange={(e) =>
                   setProjects(
@@ -217,9 +224,9 @@ function EditPageContent() {
                     )
                   )
                 }
-                placeholder="Description"
               />
               <Input
+                label="Project link"
                 value={p.link ?? ""}
                 onChange={(e) =>
                   setProjects(
@@ -228,7 +235,6 @@ function EditPageContent() {
                     )
                   )
                 }
-                placeholder="Link"
               />
             </div>
           ))}
@@ -240,17 +246,18 @@ function EditPageContent() {
               setProjects([...projects, { title: "", description: "", link: "" }])
             }
           >
-            + Add project
+            + Add a project
           </Button>
         </Card>
 
-        <Card className="p-6">
+        <Card className="surface-card p-6 sm:p-8">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Experience</h3>
+            <div><h3 className="serif-display text-[27px]">Experience</h3><p className="mt-1 text-[13px] text-muted-foreground">The experiences that shaped your work.</p></div>
           </div>
           {experience.map((e, i) => (
             <div key={i} className="grid md:grid-cols-3 gap-3 mb-3">
               <Input
+                label="Role and company"
                 value={e.title}
                 onChange={(ev) =>
                   setExperience(
@@ -259,9 +266,9 @@ function EditPageContent() {
                     )
                   )
                 }
-                placeholder="Role / Company"
               />
               <Input
+                label="What you did"
                 value={e.description}
                 onChange={(ev) =>
                   setExperience(
@@ -270,9 +277,9 @@ function EditPageContent() {
                     )
                   )
                 }
-                placeholder="Description"
               />
               <Input
+                label="When"
                 value={e.date ?? ""}
                 onChange={(ev) =>
                   setExperience(
@@ -281,7 +288,6 @@ function EditPageContent() {
                     )
                   )
                 }
-                placeholder="Date"
               />
             </div>
           ))}
@@ -293,17 +299,18 @@ function EditPageContent() {
               setExperience([...experience, { title: "", description: "", date: "" }])
             }
           >
-            + Add experience
+            + Add an experience
           </Button>
         </Card>
 
-        <Card className="p-6">
+        <Card className="surface-card p-6 sm:p-8">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Education</h3>
+            <div><h3 className="serif-display text-[27px]">Education</h3><p className="mt-1 text-[13px] text-muted-foreground">Learning that moved you forward.</p></div>
           </div>
           {education.map((e, i) => (
             <div key={i} className="grid md:grid-cols-3 gap-3 mb-3">
               <Input
+                label="Institution"
                 value={e.title}
                 onChange={(ev) =>
                   setEducation(
@@ -312,9 +319,9 @@ function EditPageContent() {
                     )
                   )
                 }
-                placeholder="Institution"
               />
               <Input
+                label="Degree or field"
                 value={e.description}
                 onChange={(ev) =>
                   setEducation(
@@ -323,9 +330,9 @@ function EditPageContent() {
                     )
                   )
                 }
-                placeholder="Degree / Field"
               />
               <Input
+                label="When"
                 value={e.date ?? ""}
                 onChange={(ev) =>
                   setEducation(
@@ -334,7 +341,6 @@ function EditPageContent() {
                     )
                   )
                 }
-                placeholder="Date"
               />
             </div>
           ))}
@@ -350,14 +356,15 @@ function EditPageContent() {
           </Button>
         </Card>
 
-        <Card className="p-6">
+        <Card className="surface-card p-6 sm:p-8">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Social Links</h3>
+            <div><h3 className="serif-display text-[27px]">Elsewhere online</h3><p className="mt-1 text-[13px] text-muted-foreground">Connect the dots to the rest of your work.</p></div>
           </div>
           <div className="space-y-2">
             {[...Object.entries(socialLinks)].map(([key, value]) => (
               <div key={key} className="flex gap-2">
                 <Input
+                  label="Platform"
                   value={key}
                   onChange={(ev) => {
                     const newKey = ev.target.value;
@@ -366,22 +373,21 @@ function EditPageContent() {
                     newLinks[newKey] = value;
                     setSocialLinks(newLinks);
                   }}
-                  placeholder="GitHub"
                 />
                 <Input
+                  label="Profile URL"
                   value={value}
                   onChange={(ev) =>
                     setSocialLinks({ ...socialLinks, [key]: ev.target.value })
                   }
-                  placeholder="https://..."
                 />
               </div>
             ))}
           </div>
         </Card>
 
-        <Button type="submit" className="w-full bg-primary text-primary-foreground" disabled={loading}>
-          {loading ? "Saving..." : "Save & publish"}
+        <Button type="submit" className="accent-action flex h-12 w-full items-center justify-center font-semibold" disabled={loading}>
+          {loading ? "Saving..." : "Save and publish"}
         </Button>
       </form>
     </div>

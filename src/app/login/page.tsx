@@ -4,9 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { ArrowLeft, ArrowUpRight, Asterisk } from "lucide-react";
 import Input from "@/components/ui/input";
 import Button from "@/components/ui/button";
-import Card from "@/components/ui/card";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -33,43 +33,61 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
-      <Card className="w-full max-w-md p-8">
-        <h1 className="text-2xl font-bold mb-2 text-center">Welcome back</h1>
-        <p className="text-muted-foreground text-center mb-8">Sign in to your account</p>
+    <main className="auth-backdrop grid min-h-[calc(100vh-76px)] place-items-center px-5 py-12 sm:px-8">
+      <div className="grid w-full max-w-[990px] overflow-hidden rounded-[28px] border border-[#dedfd5] bg-[#fffefa] shadow-[0_24px_90px_rgba(25,53,46,0.10)] md:grid-cols-[0.9fr_1.1fr]">
+        <aside className="hero-grid relative hidden flex-col justify-between overflow-hidden p-10 text-[#f5f5ee] md:flex">
+          <Link href="/" className="flex items-center gap-2.5 text-[18px] font-bold tracking-[-0.06em]"><span className="brand-mark">p.</span> profolion.</Link>
+          <div className="relative z-[1] py-12">
+            <Asterisk className="mb-7 text-[#d7ff70]" size={25} strokeWidth={1.3} />
+            <p className="eyebrow mb-4">Good to have you back</p>
+            <p className="serif-display text-[52px] leading-[0.98]">Your next<br />chapter is<br /><span className="text-[#d7ff70]">in progress.</span></p>
+            <p className="mt-5 max-w-[290px] text-[13px] leading-6 text-white/65">Pick up where you left off. There&apos;s more good work waiting to be shared.</p>
+          </div>
+          <p className="text-[11px] text-white/45">Your work has places to go ↗</p>
+          <div className="absolute -bottom-16 -right-20 h-64 w-64 rounded-full border border-white/10" />
+          <div className="absolute -bottom-6 -right-10 h-40 w-40 rounded-full border border-white/10" />
+        </aside>
+        <section className="p-7 sm:p-10 md:p-12">
+          <Link href="/" className="mb-10 inline-flex items-center gap-2 text-[12px] font-medium text-[#68756c] hover:text-[#19352e]"><ArrowLeft size={14} /> Back home</Link>
+          <div className="mb-8">
+            <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-[#67815c]">Welcome back</p>
+            <h1 className="serif-display text-[42px] leading-none sm:text-[48px]">Pick up where you left off.</h1>
+            <p className="mt-3 text-[14px] text-[#68756c]">Sign in to get back to your portfolio.</p>
+          </div>
         {error && (
-          <div className="mb-4 p-3 rounded-medium bg-destructive/10 border border-destructive/50 text-destructive text-sm">
+          <div role="alert" className="mb-5 rounded-xl border border-[#f1c7bd] bg-[#fff2ef] p-3 text-[13px] text-[#a7372b]">
             {error}
           </div>
         )}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <Input
             label="Email"
             type="email"
-            placeholder="you@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
             required
           />
           <Input
             label="Password"
             type="password"
-            placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
             required
           />
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Signing in..." : "Sign in"}
+          <Button type="submit" className="primary-action mt-2 flex h-12 w-full items-center justify-center gap-2 text-[13px] font-semibold" disabled={loading}>
+            {loading ? "Signing in..." : <>Sign in <ArrowUpRight size={16} /></>}
           </Button>
         </form>
-        <p className="mt-6 text-center text-sm text-muted-foreground">
+        <p className="mt-7 text-center text-[13px] text-[#68756c]">
           Don&apos;t have an account?{" "}
-          <Link href="/signup" className="font-medium text-primary hover:underline">
+          <Link href="/signup" className="font-semibold text-[#35634d] hover:underline">
             Sign up
           </Link>
         </p>
-      </Card>
-    </div>
+        </section>
+      </div>
+    </main>
   );
 }

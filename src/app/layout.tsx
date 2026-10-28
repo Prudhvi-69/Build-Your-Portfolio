@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PortfolioHost - Build Your Free Portfolio",
-  description: "Upload your details and get your portfolio ready in minutes. Free portfolio hosting.",
+  title: "Profolion — Make your work impossible to ignore",
+  description: "Build a personal portfolio that looks like you, in minutes. No code, no credit card.",
 };
 
 export default function RootLayout({
