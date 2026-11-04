@@ -1,0 +1,73 @@
+PROFOLION — TEMPLATE LIBRARY HANDOFF
+====================================
+
+READ "HANDOFF_README.md" FIRST. It is the full brief.
+This file is only the 5-step setup.
+
+1. Open this "Build-Your-Portfolio" folder in VS Code.
+2. Install the Kombai extension on this PC.
+3. In the terminal, in this folder:
+
+       npm install
+
+   IMPORTANT: use "npm install", NOT "npm ci".
+   The committed package-lock.json is out of sync and "npm ci" will fail.
+
+4. Create your env file (REQUIRED before building):
+
+       Copy-Item .env.example .env.local
+
+   Then open .env.local and replace the two placeholders with the
+   project's Supabase URL and anon key.
+   (They are also in Netlify -> Site configuration -> Environment variables.)
+   Without this file, "npm run build" fails on / and /templates/<id>.
+
+5. Start it:
+
+       npm run dev
+
+   Then open http://localhost:3000/templates
+
+OPEN THE DESIGN CANVAS IN KOMBAI
+--------------------------------
+    .kombai/canvas/profolion_templates.canvas
+
+That one file holds all 10 designed template pages plus the spec board.
+Do not move or rename it: the code links to these canvas pages, and
+HANDOFF_README.md refers to each page by its node id
+(e.g. "var_c72da1816899" = Grand Line).
+
+WHERE YOU ARE RIGHT NOW
+-----------------------
+  10 templates designed and linked to the app
+   0 templates designed but not linked
+  12 templates pending (they already work on the site; they just have
+     no bespoke canvas page yet)
+
+Section 6 of HANDOFF_README.md lists the 12 pending pages, the exact
+order to design them in, the exact colours and fonts to use, and the
+interaction each one must include.
+
+Section 7 explains how to take a finished design and link it into the
+app. Section 8 has ready-to-paste prompts for each job.
+
+BEFORE SHIPPING ANYTHING
+------------------------
+Section 7.0 (in HANDOFF_README.md) describes a time-sensitive task:
+four image URLs point at a third-party CDN that will expire. Move those
+images into public/art/ and update the registry first.
+
+Questions about the product (not the templates)? Read README.md.
+Questions about the engineering rules? Read TEMPLATE_HANDOFF.md.
+
+HANDING THE CODE WORK TO ANOTHER AI AGENT
+-----------------------------------------
+All 22 templates are designed on the canvas and all 22 already render in the
+app. What remains is implementation only: 12 pages render through a shared
+archetype instead of their own layout, plus the Marvel/DC family split and the
+deploy.
+
+Give the next agent CODER-AGENT-README.md FIRST. It carries the full inventory
+(template -> canvas node id -> palette -> fonts -> motion -> code state), a
+per-template port recipe, the verification commands and the Git/Netlify steps.
+It exists so that agent never has to design anything.

@@ -176,3 +176,117 @@ textarea {
     transform: rotate(0);
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Portfolio template primitives
+   State classes toggled by the template motion layer. These are states, not
+   decorative transitions, so nothing here runs on its own.
+--------------------------------------------------------------------------- */
+
+[data-reveal] {
+  opacity: 0.3;
+  transition: opacity 520ms cubic-bezier(0.3, 0.8, 0.2, 1);
+}
+
+[data-reveal].is-revealed {
+  opacity: 1;
+}
+
+[data-seal],
+[data-stamp],
+[data-flap],
+[data-charge],
+[data-signal] {
+  cursor: pointer;
+}
+
+[data-seal].is-sealed,
+[data-stamp].is-stamped {
+  box-shadow:
+    0 0 0 1px currentColor,
+    0 0 0 6px color-mix(in srgb, currentColor 18%, transparent);
+}
+
+[data-flap] {
+  text-align: left;
+}
+
+/* Star Shield: latching the seal prints its impression behind the hero. */
+[data-imprint] {
+  opacity: 0;
+  transition: opacity 240ms ease;
+}
+
+[data-seal-scope]:has([data-seal][aria-pressed="true"]) [data-imprint] {
+  opacity: 0.55;
+}
+
+/* Emerald Oath: the construct ring turns on its own axis. */
+@keyframes construct-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+[data-construct-spin] {
+  animation: construct-spin 56s linear infinite;
+  transform-origin: 160px 160px;
+}
+
+[data-seal-state="on"] {
+  display: none;
+}
+
+[data-seal-scope]:has([data-seal][aria-pressed="true"]) [data-seal-state="on"] {
+  display: inline;
+}
+
+[data-seal-scope]:has([data-seal][aria-pressed="true"]) [data-seal-state="off"] {
+  display: none;
+}
+
+[data-flap] .flap-reveal {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    max-height 460ms cubic-bezier(0.2, 0.9, 0.2, 1),
+    opacity 300ms ease;
+}
+
+[data-flap].is-open .flap-reveal {
+  max-height: 220px;
+  opacity: 1;
+}
+
+[data-flap] .flap-toggle {
+  transition: transform 320ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+[data-flap].is-open .flap-toggle {
+  transform: rotate(45deg);
+}
+
+[data-rail] {
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+[data-rail]::-webkit-scrollbar {
+  height: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transition: none;
+  }
+
+  [data-construct-spin] {
+    animation: none;
+  }
+
+  [data-flap] .flap-reveal {
+    transition: none;
+  }
+}

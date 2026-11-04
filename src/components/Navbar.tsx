@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ArrowUpRight, LogOut } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [supabase] = useState(createClient);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [authError, setAuthError] = useState("");
@@ -30,6 +32,13 @@ export default function Navbar() {
     }
   }
 
+  // A published portfolio and a full template preview are the owner's page, so
+  // the product's own navigation stays out of them.
+  const onTemplateSurface =
+    /^\/portfolio\/(?!edit).+/.test(pathname ?? "") || /^\/templates\/.+/.test(pathname ?? "");
+
+  if (onTemplateSurface) return null;
+
   return (
     <nav className="site-nav sticky top-0 z-40">
       <div className="mx-auto flex h-[76px] max-w-[1320px] items-center justify-between px-5 sm:px-8">
@@ -41,6 +50,9 @@ export default function Navbar() {
         <div className="hidden items-center gap-9 text-[13px] font-medium text-[#68756c] md:flex">
           <Link href="/#how-it-works" className="transition-colors hover:text-[#19352e]">
             How it works
+          </Link>
+          <Link href="/templates" className="transition-colors hover:text-[#19352e]">
+            Templates
           </Link>
           <Link href="/features" className="transition-colors hover:text-[#19352e]">
             Why Profolion

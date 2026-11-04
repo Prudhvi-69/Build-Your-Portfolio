@@ -34,6 +34,7 @@ export interface Database {
           slug: string;
           title: string;
           bio: string;
+          template: string;
           avatar_url: string | null;
           skills: string[];
           projects: JsonArray;
@@ -49,6 +50,7 @@ export interface Database {
           slug: string;
           title?: string;
           bio?: string;
+          template?: string;
           avatar_url?: string | null;
           skills?: string[];
           projects?: JsonArray;
@@ -64,6 +66,7 @@ export interface Database {
           slug?: string;
           title?: string;
           bio?: string;
+          template?: string;
           avatar_url?: string | null;
           skills?: string[];
           projects?: JsonArray;

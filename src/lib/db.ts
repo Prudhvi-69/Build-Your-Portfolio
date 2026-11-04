@@ -28,6 +28,7 @@ export async function createPortfolio(input: {
   slug: string;
   title?: string;
   bio?: string;
+  template?: string;
   avatar_url?: string | null;
   skills?: string[];
   projects?: unknown[];
@@ -55,6 +56,7 @@ export async function createPortfolio(input: {
       slug: input.slug,
       title: input.title || "My Portfolio",
       bio: input.bio || "",
+      template: input.template || "konoha-ink",
       avatar_url: input.avatar_url || null,
       skills: input.skills || [],
       projects: input.projects || [],
@@ -73,6 +75,7 @@ export async function updatePortfolio(
     slug: string;
     title: string;
     bio: string;
+    template: string;
     avatar_url: string | null;
     skills: string[];
     projects: unknown[];

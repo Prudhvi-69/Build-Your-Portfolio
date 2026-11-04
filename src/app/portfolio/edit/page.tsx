@@ -10,6 +10,8 @@ import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import Textarea from "@/components/ui/textarea";
 import Card from "@/components/ui/card";
+import TemplatePicker from "@/components/templates/TemplatePicker";
+import { getTemplate, TEMPLATES } from "@/lib/templates/registry";
 
 type Item = {
   title: string;
@@ -23,6 +25,7 @@ function EditPageContent() {
   const searchParams = useSearchParams();
   const editId = searchParams.get("id");
   const [mode, setMode] = useState<"create" | "edit">("create");
+  const [template, setTemplate] = useState(getTemplate(searchParams.get("template")).id);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const supabase = createClient();
@@ -58,6 +61,7 @@ function EditPageContent() {
     setTitle(data.title);
     setBio(data.bio);
     setSlug(data.slug);
+    setTemplate(getTemplate(data.template).id);
     setSkills(data.skills || []);
     setAvatarUrl(data.avatar_url || "");
     setProjects(data.projects || []);
@@ -83,6 +87,7 @@ function EditPageContent() {
       slug,
       title,
       bio,
+      template,
       avatar_url: avatarUrl || null,
       skills: skills.filter(Boolean),
       projects: projects.filter((p) => p.title),
@@ -126,6 +131,15 @@ function EditPageContent() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        <TemplatePicker
+          templates={TEMPLATES}
+          value={template}
+          name={title || "Your name"}
+          role={experience[0]?.description || "Portfolio"}
+          projects={projects.map((project) => project.title).filter(Boolean)}
+          onChange={setTemplate}
+        />
+
         <Card className="surface-card p-6 sm:p-8">
           <div className="grid md:grid-cols-2 gap-6">
             <Input

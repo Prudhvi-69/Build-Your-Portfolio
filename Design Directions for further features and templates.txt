@@ -1,0 +1,23 @@
+Design Directions
+Ways to style this interface.
+Shinobi Archive Scroll
+Concept
+Edo hanging scrolls and cinnabar seals shape a quiet village archive through vertical brush lettering, warm paper and ink-wash fields.More
+Character
+Warm paper and dark ink carry restrained red accents, with vertical mincho lettering, speckled flat surfaces and sharp, notched edges.More
+Avoids
+16 AI-slop patternsCentred hero stacks, identical project cards and zigzag timelines, generic badges and filler copy.More
+Powered Armor Cockpit
+Concept
+A powered-armor cockpit combines a teal hull, visor glass, machined plates and amber readouts, with the portfolio presented as equipment to inspect.More
+Character
+A teal hull and dark readout fields contrast with aqua and yellow indicators, geometric display lettering and machined surfaces with clipped corners and recessed wells.More
+Avoids
+16 AI-slop patternsTarget-lock glow halos, uniform readout grids and stacked project cards, generic badges and placeholder content.More
+Nocturnal Art Deco
+Concept
+A nocturnal art-deco metropolis pairs black stone and gold searchlights with a violet vault, stepped frames and a skyline-like presentation.More
+Character
+Black and parchment anchor the page, with gold beams and violet passages, open-tracked serif titles, flat tonal frames and stepped deco edges.More
+Avoids
+16 AI-slop patternsCentred hero stacks, nested gallery cards and uniform card layouts, generic badges and template filler.More

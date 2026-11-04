@@ -17,6 +17,7 @@ create table if not exists public.portfolios (
   slug text unique not null,
   title text default 'My Portfolio' not null,
   bio text default '' not null,
+  template text default 'konoha-ink' not null,
   avatar_url text,
   skills jsonb default '[]'::jsonb not null,
   projects jsonb default '[]'::jsonb not null,
