@@ -89,7 +89,7 @@ function LoginForm() {
         <p className="mt-7 text-center text-[13px] text-[#68756c]">
           Don&apos;t have an account?{" "}
           <Link
-            href={next === "/dashboard" ? "/signup" : `/signup?next=${encodeURIComponent(next)}`}
+            href={`/signup?next=${encodeURIComponent(next)}`}
             className="font-semibold text-[#35634d] hover:underline"
           >
             Sign up

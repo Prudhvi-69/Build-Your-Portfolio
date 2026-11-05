@@ -25,8 +25,10 @@ export default function NotFound() {
           >
             <Layers3 size={15} /> Browse the templates
           </Link>
+          {/* The studio, not signup: a signed-in visitor goes straight there, and
+              an anonymous one is sent to log in and then on to the studio. */}
           <Link
-            href="/signup"
+            href="/dashboard"
             className="inline-flex items-center justify-center gap-2 rounded-full border border-[#dedfd5] bg-[#fffefa] px-6 py-3.5 text-[13px] font-semibold text-[#35544a] transition-colors hover:bg-[#eef2e9]"
           >
             Create your studio <ArrowUpRight size={15} />
