@@ -48,3 +48,6 @@ next-env.d.ts
 
 # handoff archives (the project source of truth is git, not a zip)
 *.zip
+
+# local Netlify CLI dumps
+.netlify-*

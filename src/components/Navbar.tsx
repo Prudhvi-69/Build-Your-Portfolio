@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowUpRight, LogOut } from "lucide-react";
+import { ArrowUpRight, LogOut, UserRound } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 export default function Navbar() {
@@ -64,6 +64,12 @@ export default function Navbar() {
             <div aria-hidden="true" className="h-10 w-32 animate-pulse rounded-full bg-[#e9eee5]" />
           ) : isAuthenticated ? (
             <>
+              <Link
+                href="/profile"
+                className="hidden items-center gap-1.5 px-2 py-2 text-[13px] font-semibold text-[#68756c] transition-colors hover:text-[#19352e] sm:flex"
+              >
+                <UserRound size={14} /> Profile
+              </Link>
               <Link href="/dashboard" className="primary-action flex items-center gap-2 px-5 py-3 text-[13px] font-semibold">
                 My studio <ArrowUpRight size={15} strokeWidth={2} />
               </Link>

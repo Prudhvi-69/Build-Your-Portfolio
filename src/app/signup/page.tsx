@@ -4,9 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { ArrowLeft, ArrowUpRight, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, CheckCircle2, Mail, Sparkles } from "lucide-react";
 import Input from "@/components/ui/input";
 import Button from "@/components/ui/button";
+import { checkSignupEmail } from "@/lib/account";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -14,15 +15,29 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [error, setError] = useState("");
+  const [suggestion, setSuggestion] = useState("");
   const [loading, setLoading] = useState(false);
+  const [awaitingConfirmation, setAwaitingConfirmation] = useState(false);
   const supabase = createClient();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    setSuggestion("");
     setLoading(true);
-    const { error: err } = await supabase.auth.signUp({
-      email,
+
+    // Reject typo'd, disposable and already-registered addresses before creating
+    // an account nobody can receive mail for.
+    const emailCheck = await checkSignupEmail(email);
+    if (!emailCheck.ok) {
+      setLoading(false);
+      setError(emailCheck.message || "Please check the email address.");
+      setSuggestion(emailCheck.suggestion || "");
+      return;
+    }
+
+    const { data, error: err } = await supabase.auth.signUp({
+      email: emailCheck.email || email,
       password,
       options: { data: { full_name: fullName } },
     });
@@ -31,7 +46,14 @@ export default function SignupPage() {
       setError(err.message);
       return;
     }
-    router.push("/dashboard");
+
+    // A session means email confirmation is switched off for this project, so
+    // the account is live immediately. Otherwise show what to do next.
+    if (data.session) {
+      router.push("/dashboard");
+      return;
+    }
+    setAwaitingConfirmation(true);
   }
 
   return (
@@ -56,9 +78,41 @@ export default function SignupPage() {
             <h1 className="serif-display text-[42px] leading-none sm:text-[48px]">Make it yours.</h1>
             <p className="mt-3 text-[14px] text-[#68756c]">Create your free account. Your portfolio is just around the corner.</p>
           </div>
+        {awaitingConfirmation ? (
+          <div role="status" aria-live="polite" className="rounded-2xl border border-[#cfe0c2] bg-[#f2f7ee] p-5">
+            <span className="flex items-center gap-2 text-[13px] font-semibold text-[#35634d]">
+              <CheckCircle2 size={17} /> Account created
+            </span>
+            <p className="mt-2 text-[13px] leading-6 text-[#4c6156]">
+              We sent a confirmation link to <span className="font-semibold">{email.trim()}</span>. Open it to
+              activate your account, then log in to start building.
+            </p>
+            <p className="mt-3 flex items-start gap-2 text-[12px] leading-5 text-[#68756c]">
+              <Mail size={14} className="mt-0.5 shrink-0" /> Can&apos;t find it? Check the spam folder and
+              confirm the address is spelled correctly.
+            </p>
+            <Link href="/login" className="primary-action mt-4 inline-flex items-center gap-2 px-5 py-3 text-[13px] font-semibold">
+              Go to log in <ArrowUpRight size={15} />
+            </Link>
+          </div>
+        ) : (
+        <>
         {error && (
           <div role="alert" className="mb-5 rounded-xl border border-[#f1c7bd] bg-[#fff2ef] p-3 text-[13px] text-[#a7372b]">
-            {error}
+            <p>{error}</p>
+            {suggestion && (
+              <button
+                type="button"
+                onClick={() => {
+                  setEmail(suggestion);
+                  setError("");
+                  setSuggestion("");
+                }}
+                className="mt-2 text-[12px] font-semibold underline underline-offset-2"
+              >
+                Use {suggestion}
+              </button>
+            )}
           </div>
         )}
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -84,9 +138,12 @@ export default function SignupPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="new-password"
-            minLength={6}
+            minLength={8}
             required
           />
+          <p className="-mt-2 text-[11px] leading-5 text-[#879186]">
+            At least 8 characters. Use a real inbox — we send a confirmation link there.
+          </p>
           <Button type="submit" className="primary-action mt-2 flex h-12 w-full items-center justify-center gap-2 text-[13px] font-semibold" disabled={loading}>
             {loading ? "Creating account..." : <>Create your account <ArrowUpRight size={16} /></>}
           </Button>
@@ -97,6 +154,8 @@ export default function SignupPage() {
             Log in
           </Link>
         </p>
+        </>
+        )}
         </section>
       </div>
     </main>

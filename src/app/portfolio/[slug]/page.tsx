@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PortfolioRenderer from "@/components/portfolio/PortfolioRenderer";
+import ViewTracker from "@/components/portfolio/ViewTracker";
 import { getPortfolio } from "@/lib/db";
 import { toContent } from "@/lib/portfolio/content";
 import { getTemplate } from "@/lib/templates/registry";
@@ -34,6 +35,7 @@ export default async function PortfolioPage({
 
   return (
     <main className="min-h-screen">
+      <ViewTracker slug={portfolio.slug} />
       <PortfolioRenderer content={toContent(portfolio)} templateId={template.id} />
     </main>
   );

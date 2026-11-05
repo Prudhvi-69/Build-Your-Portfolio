@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Eye, FilePlus2, Globe2, Layers3, MoveUpRight } from "lucide-react";
+import { ArrowUpRight, BarChart3, Eye, FilePlus2, Globe2, Layers3, MoveUpRight, UserRound } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import Card from "@/components/ui/card";
 import { getTemplate } from "@/lib/templates/registry";
@@ -14,6 +14,8 @@ type PortfolioItem = {
   slug: string;
   template: string;
   updated_at: string;
+  view_count?: number | null;
+  last_viewed_at?: string | null;
 };
 
 export default function DashboardPage() {
@@ -65,6 +67,12 @@ export default function DashboardPage() {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Link
+            href="/profile"
+            className="inline-flex items-center gap-2 rounded-full border border-[#dedfd5] px-5 py-3.5 text-[13px] font-semibold text-[#35544a] transition-colors hover:bg-[#eef2e9]"
+          >
+            <UserRound size={15} /> Profile
+          </Link>
+          <Link
             href="/templates"
             className="inline-flex items-center gap-2 rounded-full border border-[#dedfd5] px-5 py-3.5 text-[13px] font-semibold text-[#35544a] transition-colors hover:bg-[#eef2e9]"
           >
@@ -105,6 +113,9 @@ export default function DashboardPage() {
                   <p className="mt-2 flex flex-wrap items-center gap-2 text-[12px] text-muted-foreground">
                     <span className="rounded-full bg-[#eef2e9] px-2 py-0.5 text-[10px] font-semibold text-[#35634d]">
                       {getTemplate(portfolio.template).name}
+                    </span>
+                    <span className="inline-flex items-center gap-1 font-mono text-[11px]">
+                      <BarChart3 size={12} /> {(portfolio.view_count ?? 0).toLocaleString()} visits
                     </span>
                     Updated {new Date(portfolio.updated_at).toLocaleDateString()}
                   </p>

@@ -10,20 +10,55 @@ export interface Database {
           email: string | null;
           full_name: string | null;
           avatar_url: string | null;
+          role: "user" | "admin";
+          bio: string | null;
+          website: string | null;
           created_at: string;
+          updated_at: string;
         };
         Insert: {
           id: string;
           email?: string;
           full_name?: string;
           avatar_url?: string;
+          role?: "user" | "admin";
+          bio?: string;
+          website?: string;
           created_at?: string;
+          updated_at?: string;
         };
         Update: {
           id?: string;
           email?: string;
           full_name?: string;
           avatar_url?: string;
+          role?: "user" | "admin";
+          bio?: string;
+          website?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      portfolio_visits: {
+        Row: {
+          id: number;
+          portfolio_id: string;
+          slug: string;
+          viewed_on: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: number;
+          portfolio_id: string;
+          slug: string;
+          viewed_on?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: number;
+          portfolio_id?: string;
+          slug?: string;
+          viewed_on?: string;
           created_at?: string;
         };
       };
@@ -42,6 +77,8 @@ export interface Database {
           education: JsonArray;
           social_links: JsonObject;
           is_published: boolean;
+          view_count: number;
+          last_viewed_at: string | null;
           updated_at: string;
         };
         Insert: {
@@ -58,6 +95,8 @@ export interface Database {
           education?: JsonArray;
           social_links?: JsonObject;
           is_published?: boolean;
+          view_count?: number;
+          last_viewed_at?: string | null;
           updated_at?: string;
         };
         Update: {
@@ -74,6 +113,8 @@ export interface Database {
           education?: JsonArray;
           social_links?: JsonObject;
           is_published?: boolean;
+          view_count?: number;
+          last_viewed_at?: string | null;
           updated_at?: string;
         };
       };

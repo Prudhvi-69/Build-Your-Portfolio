@@ -3,30 +3,53 @@ import {
   ArrowDown,
   ArrowUpRight,
   Asterisk,
+  BarChart3,
+  Check,
   Globe2,
   Layers3,
   MoveUpRight,
-  Sparkles,
+  ShieldCheck,
+  UserRound,
 } from "lucide-react";
+import TemplateStrip from "@/components/marketing/TemplateStrip";
+import { TEMPLATES } from "@/lib/templates/registry";
 
 const steps = [
   {
     number: "01",
     title: "Bring your story.",
     description: "Add the projects, skills, and little details that make your work unmistakably yours.",
-    icon: Sparkles,
+    icon: UserRound,
   },
   {
     number: "02",
-    title: "Make it feel like you.",
-    description: "Shape your page around what matters. No templates to wrestle with, no code to learn.",
+    title: "Pick a world.",
+    description: "Choose from 22 designed templates. Each one carries its own type, colour and interaction.",
     icon: Layers3,
   },
   {
     number: "03",
-    title: "Put it out there.",
-    description: "One link. A real home for your work that is ready to share with the world.",
+    title: "Publish and count.",
+    description: "Share one link, then watch each portfolio's visit count from your dashboard.",
     icon: Globe2,
+  },
+];
+
+const guarantees = [
+  {
+    title: "Visit counts you can see",
+    description: "Every published link records its own visits, so you know which portfolio actually gets read.",
+    icon: BarChart3,
+  },
+  {
+    title: "A profile behind the page",
+    description: "One account, one profile, every portfolio you own — published or draft — in a single place.",
+    icon: UserRound,
+  },
+  {
+    title: "Real addresses only",
+    description: "Sign-up checks the address before an account exists, so a typo never costs you your login.",
+    icon: ShieldCheck,
   },
 ];
 
@@ -164,11 +187,69 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="border-t border-[#dedfd5] px-5 py-16 sm:px-8 sm:py-20">
+        <div className="mx-auto max-w-[1320px]">
+          <div className="mb-10 grid gap-6 md:grid-cols-[1fr_1fr] md:items-end">
+            <div>
+              <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.17em] text-[#67815c]">
+                {TEMPLATES.length} templates, one account
+              </p>
+              <h2 className="serif-display max-w-[560px] text-[clamp(2.4rem,4.6vw,4rem)] leading-[1] ">
+                Not one style. <em>Twenty-two.</em>
+              </h2>
+            </div>
+            <p className="max-w-[440px] text-[15px] leading-7 text-[#68756c] md:justify-self-end">
+              Anime, comics and film worlds reimagined as portfolio systems — each with its own palette,
+              typography and one signature interaction. Switch whenever you like; your content stays put.
+            </p>
+          </div>
+          <TemplateStrip
+            title="A few of them"
+            ids={["konoha-ink", "grand-line", "arc-reactor", "gotham-nocturne", "owl-post", "deep-field"]}
+          />
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Link href="/templates" className="primary-action inline-flex items-center gap-2 px-6 py-3.5 text-[13px] font-semibold">
+              Browse the whole library <ArrowUpRight size={15} />
+            </Link>
+            <Link href="/features" className="inline-flex items-center gap-2 px-2 py-3 text-[13px] font-semibold text-[#35544a] hover:underline">
+              What each template includes
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-5 py-16 sm:px-8 sm:py-20">
+        <div className="mx-auto max-w-[1320px]">
+          <div className="section-rule grid md:grid-cols-3">
+            {guarantees.map(({ title, description, icon: Icon }, index) => (
+              <article
+                key={title}
+                className="border-b border-[#dedfd5] py-8 md:border-b-0 md:border-r md:px-8 md:py-9 md:first:pl-0 md:last:border-r-0"
+              >
+                <div className="mb-7 flex items-center justify-between">
+                  <span className="font-mono text-[12px] text-[#8b9488]">0{index + 1} / 03</span>
+                  <Icon className="text-[#558c73]" size={19} strokeWidth={1.6} />
+                </div>
+                <h3 className="serif-display text-[25px] leading-tight">{title}</h3>
+                <p className="mt-3 max-w-[300px] text-[14px] leading-6 text-[#68756c]">{description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="px-5 pb-20 sm:px-8 sm:pb-28">
         <div className="mx-auto flex max-w-[1320px] flex-col items-start justify-between gap-8 overflow-hidden rounded-[28px] bg-[#d7ff70] px-7 py-10 sm:px-12 sm:py-14 md:flex-row md:items-end">
           <div>
             <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.17em] text-[#536c3d]">Your work has places to go</p>
             <h2 className="serif-display max-w-[690px] text-[clamp(2.8rem,6vw,5.8rem)] leading-[0.94]">Give it the link it deserves.</h2>
+            <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-[13px] font-medium text-[#3c5233]">
+              {["Free to start", "22 templates", "Visit counts included"].map((item) => (
+                <li key={item} className="flex items-center gap-1.5">
+                  <Check size={14} strokeWidth={2.5} /> {item}
+                </li>
+              ))}
+            </ul>
           </div>
           <Link href="/signup" className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#19352e] px-6 py-4 text-[14px] font-semibold text-[#f5f5ee] transition-colors hover:bg-[#285849]">
             Start for free <ArrowUpRight size={17} />
@@ -179,7 +260,12 @@ export default function Home() {
       <footer className="border-t border-[#dedfd5] px-5 py-7 sm:px-8">
         <div className="mx-auto flex max-w-[1320px] flex-col gap-3 text-[12px] text-[#68756c] sm:flex-row sm:items-center sm:justify-between">
           <span className="font-semibold tracking-[-0.03em] text-[#19352e]">profolion<span className="text-[#749454]">.</span> <span className="font-normal text-[#68756c]">A home for your best work.</span></span>
-          <div className="flex items-center gap-5"><Link href="/features" className="hover:text-[#19352e]">Why Profolion</Link><Link href="/login" className="hover:text-[#19352e]">Log in</Link></div>
+          <div className="flex items-center gap-5">
+            <Link href="/templates" className="hover:text-[#19352e]">Templates</Link>
+            <Link href="/features" className="hover:text-[#19352e]">Why Profolion</Link>
+            <Link href="/profile" className="hover:text-[#19352e]">Profile</Link>
+            <Link href="/login" className="hover:text-[#19352e]">Log in</Link>
+          </div>
           <span>Made for your next chapter ↗</span>
         </div>
       </footer>
