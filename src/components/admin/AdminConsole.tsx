@@ -59,7 +59,7 @@ export default function AdminConsole({ overview }: { overview: AdminOverview }) 
           <p className="mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#67815c]">
             <ShieldCheck size={13} /> Admin console
           </p>
-          <h1 className="serif-display text-[44px] leading-none sm:text-[54px]">Every account.</h1>
+          <h1 className="serif-display text-[38px] leading-none sm:text-[54px]">Every account.</h1>
           <p className="mt-3 text-[14px] text-muted-foreground">
             Who signed up, what they published, and how many people have visited it.
           </p>
@@ -87,7 +87,7 @@ export default function AdminConsole({ overview }: { overview: AdminOverview }) 
         </div>
       )}
 
-      <div className="mb-8 grid gap-3 sm:grid-cols-3">
+      <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
         {stats.map(({ label, value, icon: Icon }) => (
           <div key={label} className="surface-card flex items-center justify-between p-5">
             <div>
@@ -105,14 +105,14 @@ export default function AdminConsole({ overview }: { overview: AdminOverview }) 
         <h2 className="text-[12px] font-bold uppercase tracking-[0.13em] text-[#68756c]">
           Users <span className="ml-1 font-mono text-[#879186]">({users.length})</span>
         </h2>
-        <label className="flex items-center gap-2 rounded-full border border-[#dedfd5] bg-[#fffefa] px-4 py-2">
-          <Search size={14} className="text-[#879186]" />
+        <label className="flex w-full items-center gap-2 rounded-full border border-[#dedfd5] bg-[#fffefa] px-4 py-2 sm:w-auto">
+          <Search size={14} className="shrink-0 text-[#879186]" />
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search email, name or portfolio"
             aria-label="Search users"
-            className="w-[230px] bg-transparent text-[12px] outline-none placeholder:text-[#9aa49a]"
+            className="w-full bg-transparent text-[12px] outline-none placeholder:text-[#9aa49a] sm:w-[230px]"
           />
         </label>
       </div>
@@ -152,15 +152,26 @@ export default function AdminConsole({ overview }: { overview: AdminOverview }) 
                       {user.email || "no email on file"}
                     </span>
                   </span>
-                  <span className="min-w-0 truncate text-[12px] text-[#35544a]">
-                    {first ? first.title : <span className="text-[#9aa49a]">No portfolio yet</span>}
+                  <span className="flex min-w-0 items-center justify-between gap-2 md:block md:justify-start">
+                    <span className="min-w-0 truncate text-[12px] text-[#35544a]">
+                      {first ? first.title : <span className="text-[#9aa49a]">No portfolio yet</span>}
+                    </span>
+                    {/* On a phone these three read as a summary line under the row. */}
+                    <span className="flex shrink-0 items-center gap-3 md:hidden">
+                      <span className="font-mono text-[11px] text-[#68756c]">{user.portfolioCount}</span>
+                      <span className="flex items-center gap-1 font-mono text-[11px]">
+                        <BarChart3 size={12} className="text-[#67815c]" />
+                        {user.totalViews.toLocaleString()}
+                      </span>
+                      <span className="text-[10px] text-[#879186]">{when(user.joinedAt)}</span>
+                    </span>
                   </span>
-                  <span className="font-mono text-[12px] text-[#68756c]">{user.portfolioCount}</span>
-                  <span className="flex items-center gap-2 font-mono text-[12px]">
+                  <span className="hidden font-mono text-[12px] text-[#68756c] md:block">{user.portfolioCount}</span>
+                  <span className="hidden items-center gap-2 font-mono text-[12px] md:flex">
                     <BarChart3 size={13} className="text-[#67815c]" />
                     {user.totalViews.toLocaleString()}
                   </span>
-                  <span className="text-[11px] text-[#879186] md:text-right">{when(user.joinedAt)}</span>
+                  <span className="hidden text-[11px] text-[#879186] md:block md:text-right">{when(user.joinedAt)}</span>
                 </button>
 
                 {isOpen && (

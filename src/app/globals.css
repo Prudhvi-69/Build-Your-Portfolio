@@ -66,6 +66,16 @@ textarea {
   backdrop-filter: blur(18px);
 }
 
+/* The mobile menu is a sheet under the nav. It needs an opaque ground, because
+   .site-nav is translucent and page content would otherwise show through. */
+.site-nav-panel {
+  border-top: 1px solid rgba(25, 53, 46, 0.1);
+  background: var(--paper);
+  box-shadow: 0 24px 40px rgba(25, 53, 46, 0.12);
+  max-height: calc(100dvh - 76px);
+  overflow-y: auto;
+}
+
 .brand-mark {
   display: grid;
   width: 34px;

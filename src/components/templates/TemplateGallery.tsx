@@ -7,6 +7,14 @@ import TemplateCover from "@/components/portfolio/TemplateCover";
 import { alpha, FAMILY_LABEL, type TemplateDefinition, type TemplateFamily } from "@/lib/templates/types";
 import { cn } from "@/components/ui/utils";
 
+// TemplateCover is built for a 3:2 card. Scaling it must preserve that ratio,
+// because the cover lays its own content out at these exact dimensions.
+const COVER_WIDTH = 480;
+const COVER_HEIGHT = 320;
+// Half the card plus a comfortable gutter: a laptop shows it at 1.5x, and the
+// pane never has to grow taller than the preview it contains.
+const PREVIEW_SCALE = 1.5;
+
 const FAMILIES: Array<{ id: TemplateFamily | "all"; label: string }> = [
   { id: "all", label: "All" },
   ...(Object.keys(FAMILY_LABEL) as TemplateFamily[]).map((id) => ({ id, label: FAMILY_LABEL[id] })),
@@ -63,7 +71,7 @@ export default function TemplateGallery({
           <h1 className="serif-display text-[34px] leading-none sm:text-[38px]">Templates</h1>
           <span className="pb-1 font-mono text-[11px] text-[#7b877c]">{templates.length} templates</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex w-full items-center gap-2 sm:w-auto">
           <div className="flex h-10 w-full items-center gap-2.5 rounded-full border border-[#dedfd5] bg-[#fffefa] px-4 sm:w-[300px]">
             <Search size={13} className="text-[#879186]" />
             <input
@@ -76,7 +84,7 @@ export default function TemplateGallery({
           </div>
           <Link
             href="/dashboard"
-            className="inline-flex h-10 items-center gap-2 rounded-full border border-[#dedfd5] px-4 text-[12px] font-semibold text-[#35544a] transition-colors hover:bg-[#eef2e9]"
+            className="inline-flex h-10 shrink-0 items-center gap-2 rounded-full border border-[#dedfd5] px-4 text-[12px] font-semibold whitespace-nowrap text-[#35544a] transition-colors hover:bg-[#eef2e9]"
           >
             Back to studio
           </Link>
@@ -85,7 +93,9 @@ export default function TemplateGallery({
 
       <div className="mt-4 grid gap-4 lg:h-[calc(100vh-214px)] lg:min-h-[560px] lg:grid-cols-[248px_minmax(0,1fr)]">
         <aside className="flex max-h-[720px] min-h-0 flex-col overflow-hidden rounded-[16px] border border-[#dedfd5] bg-[#fffefa] lg:max-h-none">
-          <div className="grid grid-cols-3 gap-1 border-b border-[#eceae1] p-1.5">
+          {/* A wrapping row of pills, not a grid: five families in three columns
+              truncate every label to "Anime ↕" and lose the counts. */}
+          <div className="flex flex-wrap gap-1 border-b border-[#eceae1] p-1.5">
             {FAMILIES.map((item) => {
               const isActive = family === item.id;
               return (
@@ -95,12 +105,12 @@ export default function TemplateGallery({
                   onClick={() => setFamily(item.id)}
                   aria-pressed={isActive}
                   className={cn(
-                    "rounded-[9px] py-2 text-[10px] font-bold transition-colors",
+                    "flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-bold whitespace-nowrap transition-colors",
                     isActive ? "bg-[#164e42] text-[#f7f6ef]" : "text-[#68756c] hover:bg-[#f2f4ed]"
                   )}
                 >
                   {item.label}
-                  <span className={cn("ml-1 font-mono text-[9px]", isActive ? "text-[#cfe98a]" : "text-[#a3aca1]")}>
+                  <span className={cn("font-mono text-[9px]", isActive ? "text-[#cfe98a]" : "text-[#a3aca1]")}>
                     {counts[item.id]}
                   </span>
                 </button>
@@ -203,16 +213,18 @@ export default function TemplateGallery({
                   href={`/templates/${active.id}`}
                   className="inline-flex h-8 items-center gap-1.5 rounded-full bg-[#eef2e9] px-3 text-[11px] font-semibold text-[#35544a] transition-colors hover:bg-[#e2ebdb]"
                 >
-                  <Maximize2 size={11} /> Open preview
+                  <Maximize2 size={11} /> <span className="hidden sm:inline">Open</span> preview
                 </Link>
               )}
             </div>
           </div>
 
-          <div className="relative min-h-[380px] flex-1 overflow-hidden bg-[#e7eae2] p-3">
+          {/* Scaled 1.5x the cover is 720x480; the pane must be at least that
+              tall or the frame is clipped at the bottom. */}
+          <div className="relative hidden min-h-[540px] flex-1 overflow-hidden bg-[#e7eae2] p-3 md:block">
             {active && (
               <div
-                className="relative flex h-full items-center justify-center overflow-hidden rounded-[10px] p-6 ring-1 ring-[#19352e]/10"
+                className="relative flex h-full items-center justify-center overflow-hidden rounded-[10px] p-3 ring-1 ring-[#19352e]/10 sm:p-6"
                 style={{ backgroundColor: active.theme.bg }}
               >
                 <div
@@ -228,7 +240,7 @@ export default function TemplateGallery({
                     "relative origin-center overflow-hidden rounded-[10px] shadow-[0_28px_70px_rgba(9,32,26,0.26)]",
                     motionOn && "transition-transform duration-500 hover:scale-[1.015]"
                   )}
-                  style={{ width: 480, height: 280, transform: "scale(1.5)" }}
+                  style={{ width: COVER_WIDTH, height: COVER_HEIGHT, transform: `scale(${PREVIEW_SCALE})` }}
                 >
                   <TemplateCover template={active} name={demoName} role={demoRole} projects={demoProjects} />
                 </div>
@@ -236,10 +248,10 @@ export default function TemplateGallery({
             )}
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#eceae1] px-5 py-3.5">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 items-center gap-2 rounded-[10px] border border-[#dedfd5] bg-[#fffefa] px-3">
-                <span className="text-[12px] font-semibold">{demoName} — Portfolio</span>
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#eceae1] px-4 py-3.5 sm:px-5">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="flex h-10 min-w-0 items-center gap-2 rounded-[10px] border border-[#dedfd5] bg-[#fffefa] px-3">
+                <span className="truncate text-[12px] font-semibold">{demoName} — Portfolio</span>
               </div>
               <span className="flex items-center gap-1.5 text-[11px] text-[#879186]">
                 <MousePointerClick size={12} /> {templates.length} worlds
@@ -250,7 +262,7 @@ export default function TemplateGallery({
               {active && (
                 <Link
                   href={`/portfolio/edit?template=${active.id}`}
-                  className="inline-flex h-11 items-center gap-2 rounded-full bg-[#164e42] px-6 text-[13px] font-semibold text-[#f7f6ef] transition-colors hover:bg-[#236657]"
+                  className="inline-flex h-11 items-center gap-2 rounded-full bg-[#164e42] px-5 text-[13px] font-semibold whitespace-nowrap text-[#f7f6ef] transition-colors hover:bg-[#236657] sm:px-6"
                 >
                   {active.id === currentTemplateId ? "Current template" : "Use template"}
                   {active.id === currentTemplateId ? <Check size={14} /> : <ArrowUpRight size={14} />}
