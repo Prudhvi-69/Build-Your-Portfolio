@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import PortfolioRenderer from "@/components/portfolio/PortfolioRenderer";
 import { SAMPLE_CONTENT } from "@/lib/portfolio/content";
 import { getTemplate, TEMPLATE_IDS } from "@/lib/templates/registry";
+import { createClient } from "@/lib/supabase/server";
 
 export function generateStaticParams() {
   return TEMPLATE_IDS.map((id) => ({ id }));
@@ -32,6 +33,16 @@ export default async function TemplatePreviewPage({
   if (!TEMPLATE_IDS.includes(id)) notFound();
   const template = getTemplate(id);
 
+  // "Use this template" opens the editor, which needs a session. Sending a
+  // visitor through login with the template preserved means one clean round trip
+  // instead of a fully filled form that cannot be saved.
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const editorHref = `/portfolio/edit?template=${template.id}`;
+  const useHref = user ? editorHref : `/login?next=${encodeURIComponent(editorHref)}`;
+
   return (
     <div>
       <div className="sticky top-0 z-40 border-b border-black/10 bg-[#f5f5ee]/95 backdrop-blur">
@@ -51,10 +62,10 @@ export default async function TemplatePreviewPage({
             <span className="hidden text-[11px] text-[#68756c] sm:inline">{template.tagline}</span>
           </div>
           <Link
-            href={`/portfolio/edit?template=${template.id}`}
+            href={useHref}
             className="inline-flex h-9 items-center gap-2 rounded-full bg-[#164e42] px-5 text-[12px] font-semibold text-[#f7f6ef] transition-colors hover:bg-[#236657]"
           >
-            Use this template <ArrowUpRight size={13} />
+            {user ? "Use this template" : "Log in to use this template"} <ArrowUpRight size={13} />
           </Link>
         </div>
       </div>

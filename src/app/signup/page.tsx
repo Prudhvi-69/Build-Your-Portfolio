@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { ArrowLeft, ArrowUpRight, CheckCircle2, Mail, Sparkles } from "lucide-react";
@@ -9,8 +9,12 @@ import Input from "@/components/ui/input";
 import Button from "@/components/ui/button";
 import { checkSignupEmail } from "@/lib/account";
 
-export default function SignupPage() {
+function SignupForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  // Only same-site paths are honoured, so ?next= can't become an open redirect.
+  const requested = searchParams.get("next") || "";
+  const next = requested.startsWith("/") && !requested.startsWith("//") ? requested : "/dashboard";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -50,7 +54,8 @@ export default function SignupPage() {
     // A session means email confirmation is switched off for this project, so
     // the account is live immediately. Otherwise show what to do next.
     if (data.session) {
-      router.push("/dashboard");
+      router.push(next);
+      router.refresh();
       return;
     }
     setAwaitingConfirmation(true);
@@ -91,7 +96,10 @@ export default function SignupPage() {
               <Mail size={14} className="mt-0.5 shrink-0" /> Can&apos;t find it? Check the spam folder and
               confirm the address is spelled correctly.
             </p>
-            <Link href="/login" className="primary-action mt-4 inline-flex items-center gap-2 px-5 py-3 text-[13px] font-semibold">
+            <Link
+              href={next === "/dashboard" ? "/login" : `/login?next=${encodeURIComponent(next)}`}
+              className="primary-action mt-4 inline-flex items-center gap-2 px-5 py-3 text-[13px] font-semibold"
+            >
               Go to log in <ArrowUpRight size={15} />
             </Link>
           </div>
@@ -150,7 +158,10 @@ export default function SignupPage() {
         </form>
         <p className="mt-7 text-center text-[13px] text-[#68756c]">
           Already have an account?{" "}
-          <Link href="/login" className="font-semibold text-[#35634d] hover:underline">
+          <Link
+            href={next === "/dashboard" ? "/login" : `/login?next=${encodeURIComponent(next)}`}
+            className="font-semibold text-[#35634d] hover:underline"
+          >
             Log in
           </Link>
         </p>
@@ -159,5 +170,13 @@ export default function SignupPage() {
         </section>
       </div>
     </main>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div className="auth-backdrop min-h-[calc(100vh-76px)]" />}>
+      <SignupForm />
+    </Suspense>
   );
 }

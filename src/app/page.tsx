@@ -13,6 +13,12 @@ import {
 } from "lucide-react";
 import TemplateStrip from "@/components/marketing/TemplateStrip";
 import { TEMPLATES } from "@/lib/templates/registry";
+import { SAMPLE_CONTENT } from "@/lib/portfolio/content";
+
+/** The hero preview shows the real sample portfolio, never invented copy. */
+const PREVIEW = SAMPLE_CONTENT;
+const PREVIEW_PROJECTS = PREVIEW.projects.slice(0, 3);
+const PREVIEW_SOCIALS = PREVIEW.socials.filter((social) => social.label !== "Email").slice(0, 2);
 
 const steps = [
   {
@@ -101,42 +107,57 @@ export default function Home() {
                 <i className="h-2.5 w-2.5 rounded-full bg-[#ed8571]" />
                 <i className="h-2.5 w-2.5 rounded-full bg-[#e8bd57]" />
                 <i className="h-2.5 w-2.5 rounded-full bg-[#91bd77]" />
-                <div className="mx-auto rounded-full bg-white/80 px-12 py-1 text-[9px] text-[#849087] sm:px-20">profolion.me / julian</div>
+                <div className="mx-auto rounded-full bg-white/80 px-12 py-1 text-[9px] text-[#849087] sm:px-20">
+                  profolion.netlify.app / {PREVIEW.firstName.toLowerCase()}
+                </div>
               </div>
               <div className="grid gap-5 p-5 sm:grid-cols-[0.92fr_1.08fr] sm:gap-7 sm:p-8">
                 <div className="relative flex min-h-[260px] flex-col justify-between overflow-hidden rounded-[18px] bg-[#203e35] p-5 text-white sm:min-h-[332px] sm:p-6">
-                  <Asterisk className="absolute -right-6 top-14 text-[#d7ff70]/15" size={170} strokeWidth={0.75} />
+                  <Asterisk className="absolute -right-10 top-16 text-[#d7ff70]/10" size={150} strokeWidth={0.75} />
                   <div className="relative z-[1] flex items-center gap-2 text-[10px] font-semibold tracking-wide text-white/70">
                     <span className="brand-mark !h-7 !w-7 !rounded-lg !text-sm">p.</span>
                     INDEPENDENT CREATIVE
                   </div>
-                  <div className="preview-orb absolute -right-3 top-[70px] h-[144px] w-[130px] rounded-[45%_45%_14px_14px] sm:right-0 sm:top-[65px] sm:h-[165px] sm:w-[155px]" />
+                  {/* Kept in the top-right corner, clear of the badge and the
+                      name, so "Prudhvi S." is never covered by artwork. */}
+                  <div className="preview-orb absolute -right-6 -top-6 h-[92px] w-[86px] rounded-[45%_45%_14px_14px] opacity-70 sm:h-[104px] sm:w-[96px]" />
                   <div className="relative z-[1]">
                     <div className="mb-3 inline-flex rounded-full border border-white/20 px-3 py-1 text-[9px] text-white/80">AVAILABLE FOR SELECT PROJECTS</div>
-                    <h2 className="serif-display text-[46px] leading-[0.92] sm:text-[55px]">Julian<br />Reyes<span className="text-[#d7ff70]">.</span></h2>
-                    <p className="mt-3 max-w-[180px] text-[11px] leading-5 text-white/60">Designing digital things with a little more feeling.</p>
+                    <h2 className="serif-display relative z-[2] text-[46px] leading-[0.92] sm:text-[55px]">
+                      {PREVIEW.firstName}
+                      {PREVIEW.lastName ? (
+                        <>
+                          <br />
+                          {PREVIEW.lastName}
+                        </>
+                      ) : null}
+                      <span className="text-[#d7ff70]">.</span>
+                    </h2>
+                    <p className="mt-3 line-clamp-3 max-w-[200px] text-[11px] leading-5 text-white/60">{PREVIEW.bio}</p>
                   </div>
                   <div className="relative z-[1] flex items-center justify-between border-t border-white/15 pt-4 text-[10px] text-white/65">
-                    <span>NYC · EVERYWHERE</span><ArrowUpRight size={14} />
+                    <span className="uppercase">{PREVIEW.role}</span>
+                    <ArrowUpRight size={14} />
                   </div>
                 </div>
                 <div className="flex flex-col justify-between py-1">
                   <div>
                     <div className="mb-4 flex items-center justify-between">
                       <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-[#7a857a]">Selected work</span>
-                      <span className="text-[9px] text-[#92988e]">2022 — 2025</span>
+                      <span className="text-[9px] text-[#92988e]">{PREVIEW_PROJECTS.length} projects</span>
                     </div>
                     <div className="space-y-3">
-                      {[
-                        { n: "01", name: "Good Kind", type: "Brand identity", color: "#e6a184" },
-                        { n: "02", name: "Objects for Life", type: "Digital experience", color: "#a7bd93" },
-                        { n: "03", name: "Off Hours", type: "Art direction", color: "#d0bf87" },
-                      ].map((project) => (
-                        <article key={project.n} className="group flex items-center gap-3 border-b border-[#e8e6de] pb-3">
-                          <span className="grid h-[51px] w-[58px] shrink-0 place-items-center rounded-lg text-[14px] font-bold text-[#19352e]" style={{ backgroundColor: project.color }}>{project.n}</span>
+                      {PREVIEW_PROJECTS.map((project, index) => (
+                        <article key={project.title} className="group flex items-center gap-3 border-b border-[#e8e6de] pb-3">
+                          <span
+                            className="grid h-[51px] w-[58px] shrink-0 place-items-center rounded-lg text-[14px] font-bold text-[#19352e]"
+                            style={{ backgroundColor: ["#e6a184", "#a7bd93", "#d0bf87"][index % 3] }}
+                          >
+                            {String(index + 1).padStart(2, "0")}
+                          </span>
                           <div className="min-w-0 flex-1">
-                            <h3 className="text-[13px] font-semibold">{project.name}</h3>
-                            <p className="mt-1 text-[10px] text-[#82897f]">{project.type}</p>
+                            <h3 className="truncate text-[13px] font-semibold">{project.title}</h3>
+                            <p className="mt-1 truncate text-[10px] text-[#82897f]">{project.date}</p>
                           </div>
                           <ArrowUpRight className="text-[#758073] transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" size={14} />
                         </article>
@@ -146,8 +167,10 @@ export default function Home() {
                   <div className="mt-5 flex items-center justify-between rounded-xl bg-[#eaf0e5] px-3 py-3 text-[10px]">
                     <span className="font-medium">A little more about me</span><MoveUpRight size={13} />
                   </div>
-                  <div className="mt-4 flex justify-between text-[9px] text-[#788176]">
-                    <span>INSTAGRAM</span><span>LINKEDIN</span><span>EMAIL</span>
+                  <div className="mt-4 flex justify-between text-[9px] uppercase text-[#788176]">
+                    {PREVIEW_SOCIALS.map((social) => (
+                      <span key={social.label}>{social.label}</span>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -209,7 +232,7 @@ export default function Home() {
           />
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link href="/templates" className="primary-action inline-flex items-center gap-2 px-6 py-3.5 text-[13px] font-semibold">
-              Browse the whole library <ArrowUpRight size={15} />
+              Browse the Library <ArrowUpRight size={15} />
             </Link>
             <Link href="/features" className="inline-flex items-center gap-2 px-2 py-3 text-[13px] font-semibold text-[#35544a] hover:underline">
               What each template includes

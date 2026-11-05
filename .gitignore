@@ -51,3 +51,6 @@ next-env.d.ts
 
 # local Netlify CLI dumps
 .netlify-*
+
+# transient local server output
+.server.log

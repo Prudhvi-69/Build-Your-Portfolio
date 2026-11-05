@@ -1,6 +1,7 @@
-"use client";
+﻿"use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { ArrowUpRight, Check, Maximize2, MousePointerClick, Search } from "lucide-react";
 import TemplateCover from "@/components/portfolio/TemplateCover";
@@ -39,6 +40,20 @@ export default function TemplateGallery({
   const [motionOn, setMotionOn] = useState(true);
   const listRef = useRef<HTMLDivElement>(null);
 
+  // The editor requires a session, so an anonymous visitor is sent to sign in
+  // first and brought straight back to this template afterwards.
+  const [signedIn, setSignedIn] = useState<boolean | null>(null);
+  const supabase = createClient();
+  useEffect(() => {
+    let active = true;
+    supabase.auth.getSession().then(({ data }) => {
+      if (active) setSignedIn(Boolean(data.session));
+    });
+    return () => {
+      active = false;
+    };
+  }, [supabase]);
+
   const visible = useMemo(() => {
     const search = query.trim().toLowerCase();
     return templates.filter(
@@ -49,6 +64,15 @@ export default function TemplateGallery({
   }, [templates, family, query]);
 
   const active = templates.find((template) => template.id === activeId) ?? templates[0];
+
+  const editorHrefFor = (id: string) => {
+    const editor = `/portfolio/edit?template=${id}`;
+    return signedIn === false ? `/login?next=${encodeURIComponent(editor)}` : editor;
+  }
+  const editorActionLabel = (id: string) => {
+    if (id === currentTemplateId) return "Current template";
+    return signedIn === false ? "Log in to use" : "Use template";
+  };
   const counts = useMemo(() => {
     const byFamily = { all: templates.length } as Record<TemplateFamily | "all", number>;
     (Object.keys(FAMILY_LABEL) as TemplateFamily[]).forEach((key) => {
@@ -94,7 +118,7 @@ export default function TemplateGallery({
       <div className="mt-4 grid gap-4 lg:h-[calc(100vh-214px)] lg:min-h-[560px] lg:grid-cols-[248px_minmax(0,1fr)]">
         <aside className="flex max-h-[720px] min-h-0 flex-col overflow-hidden rounded-[16px] border border-[#dedfd5] bg-[#fffefa] lg:max-h-none">
           {/* A wrapping row of pills, not a grid: five families in three columns
-              truncate every label to "Anime ↕" and lose the counts. */}
+              truncate every label and lose the counts. */}
           <div className="flex flex-wrap gap-1 border-b border-[#eceae1] p-1.5">
             {FAMILIES.map((item) => {
               const isActive = family === item.id;
@@ -261,10 +285,10 @@ export default function TemplateGallery({
               <span className="hidden font-mono text-[11px] text-[#879186] sm:inline">{active?.id}</span>
               {active && (
                 <Link
-                  href={`/portfolio/edit?template=${active.id}`}
+                  href={editorHrefFor(active.id)}
                   className="inline-flex h-11 items-center gap-2 rounded-full bg-[#164e42] px-5 text-[13px] font-semibold whitespace-nowrap text-[#f7f6ef] transition-colors hover:bg-[#236657] sm:px-6"
                 >
-                  {active.id === currentTemplateId ? "Current template" : "Use template"}
+                  {editorActionLabel(active.id)}
                   {active.id === currentTemplateId ? <Check size={14} /> : <ArrowUpRight size={14} />}
                 </Link>
               )}

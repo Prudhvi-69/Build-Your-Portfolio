@@ -1,15 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { ArrowLeft, ArrowUpRight, Asterisk } from "lucide-react";
 import Input from "@/components/ui/input";
 import Button from "@/components/ui/button";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  // Where to go after signing in. Only same-site paths are honoured, so a
+  // crafted ?next=https://evil.example can never turn this into an open redirect.
+  const requested = searchParams.get("next") || "";
+  const next = requested.startsWith("/") && !requested.startsWith("//") ? requested : "/dashboard";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -29,7 +34,8 @@ export default function LoginPage() {
       setError(err.message);
       return;
     }
-    router.push("/dashboard");
+    router.push(next);
+    router.refresh();
   }
 
   return (
@@ -82,12 +88,23 @@ export default function LoginPage() {
         </form>
         <p className="mt-7 text-center text-[13px] text-[#68756c]">
           Don&apos;t have an account?{" "}
-          <Link href="/signup" className="font-semibold text-[#35634d] hover:underline">
+          <Link
+            href={next === "/dashboard" ? "/signup" : `/signup?next=${encodeURIComponent(next)}`}
+            className="font-semibold text-[#35634d] hover:underline"
+          >
             Sign up
           </Link>
         </p>
         </section>
       </div>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="auth-backdrop min-h-[calc(100vh-76px)]" />}>
+      <LoginForm />
+    </Suspense>
   );
 }
