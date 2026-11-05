@@ -28,10 +28,11 @@ export interface AdminOverview {
 }
 
 /**
- * Everything the console shows. Uses the service-role key when it is configured,
- * because listing every user needs to read past RLS; without it the query still
- * runs but is limited to what the current Supabase session may see, and the
- * panel says so instead of silently showing a partial list.
+ * Everything the console shows. Reads with the server Supabase client, so row
+ * visibility comes from the `is_admin()` policies in the migration — the admin
+ * must therefore also be signed in to a Supabase account whose profile role is
+ * 'admin'. If those policies are missing the queries error and the console
+ * reports exactly what the database said rather than a partial list.
  */
 export async function getAdminOverview(): Promise<AdminOverview> {
   const empty: AdminOverview = { users: [], totals: { users: 0, portfolios: 0, views: 0 } };

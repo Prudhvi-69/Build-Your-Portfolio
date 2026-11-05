@@ -5,10 +5,11 @@
 [build.environment]
   NODE_VERSION = "22"
 
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
+# NOTE: no /api/* rewrite here. The OpenNext adapter already provisions the
+# function that serves route handlers and Server Actions. A blanket
+# "/api/* -> /.netlify/functions/:splat" rule overrides that mapping, so every
+# route handler 404s with Netlify's HTML error page, and the 404 HTML breaks
+# Server Actions too (their client expects a JSON response).
 
 [[headers]]
   for = "/*"
